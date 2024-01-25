@@ -16,9 +16,9 @@ class CloudSeg:
         self.target_timezone = pytz.timezone('America/Los_Angeles')
         self.time_zone_center_longitude = -120
         self.time = time
-        print(self.time)
+        
         self.time_corr()
-        print(self.time)
+        
 
     def time_corr(self):
         longitude_difference = np.abs(60 / 15 * (self.longitude - self.time_zone_center_longitude))
@@ -30,6 +30,7 @@ class CloudSeg:
     def sun_position(self):
         
         ts_corrected_localized = self.target_timezone.localize(self.time)
+        print(ts_corrected_localized)
         solar_position = pvlib.solarposition.get_solarposition(time=ts_corrected_localized, latitude=self.latitude, longitude=self.longitude)
         azimuth, zenith = solar_position["azimuth"][0], solar_position["zenith"][0]
         rho = zenith / 90 * self.r

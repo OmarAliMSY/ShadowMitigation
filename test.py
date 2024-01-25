@@ -21,32 +21,31 @@ for impath, ts in zip(samplepath, filenames_without_ext):
 
     image = cv2.imread(impath)
     image_resized = cv2.resize(image, (64, 64))  # Resize the original image to 64x64
-    resize_dim = 64
+    
     # Run cloud_detection function
     csm = cs.CloudSeg(time=ts)
     cloud_cover, cloud_mask, sun_mask = csm.cloud_detection(image_resized)
     sun_center_x, sun_center_y, sun_mask = csm.sun_position()
 
     # Resize the cloud mask and sun mask to the original size
-    cloud_mask_resized = cv2.resize(cloud_mask, (resize_dim, resize_dim))
-    sun_mask_resized = cv2.resize(sun_mask, (resize_dim, resize_dim))
+    
     #image = cv2.resize(image,(resize_dim,resize_dim))
     # Create a canvas to display images side by side
-    canvas = np.zeros((resize_dim, resize_dim*2, 3), dtype=np.uint8)
+    canvas = np.zeros((64, 64*2, 3), dtype=np.uint8)
 
     # Original image on the left
-    canvas[:resize_dim, :resize_dim] = image_resized
-    # Apply blending operations to create the result image
+    canvas[:64, :64] = image_resized
+    
     result_image = image_resized.copy()
     result_image = cv2.addWeighted(result_image, 1, sun_mask, 1, 0)
     result_image = cv2.addWeighted(result_image, 1, cloud_mask, 0.3, 0)
-    #result_image = cv2.addWeighted(result_image, 1, bound_cloud, 0.2, 0)
+    
 
     # Result image on the right (above the original image)
-    canvas[0:resize_dim, resize_dim:] = result_image
+    canvas[0:64, 64:] = result_image
 
     # Sun mask on the right (below cloud mask)
-    #canvas[0:2048, 2048:] = sun_mask_resized
+    
   
 
     # Add text to the canvas
