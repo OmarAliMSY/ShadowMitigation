@@ -2,7 +2,7 @@ import numpy as np
 import os
 import cv2
 import datetime
-from glob import glob
+from pathlib import Path
 import shamit.cloud_segmentation.Cloudseg as cs
 
 # Create a named window with a larger size
@@ -11,10 +11,11 @@ cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
 cv2.resizeWindow(window_name, 1600, 800)  # Adjust the size as needed
 
 # Assuming you have already obtained paths using glob
-samplepath = glob(r"C:\Users\o.abdulmalik\Documents\SUNSET\2017_03_images_raw\03\10\*.jpg")
+data_base_path = Path("C:\Users\o.abdulmalik\Documents\SUNSET\2017_03_images_raw\03\10")
+sample_dataset = data_base_path.rglob("*.jpg")
 
 # Now, for each path in the samplepath, we strip the directory and extension
-filenames_without_ext = [os.path.splitext(os.path.basename(path))[0] for path in samplepath]
+filenames_without_ext = [item.stem for item in sample_dataset]
 
 for impath, ts in zip(samplepath, filenames_without_ext):
     ts = datetime.datetime.strptime(ts, "%Y%m%d%H%M%S")
