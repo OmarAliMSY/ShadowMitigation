@@ -1,8 +1,8 @@
-/sample_data
-/cloud-type-classification2
-/test
-/train
-/runs
-/playground/random
+/sample_data/
+/cloud-type-classification2/
+/test/
+/train/
+/runs/
+/playground/
 environment.yml
 .idea
