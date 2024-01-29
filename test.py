@@ -1,9 +1,9 @@
 import numpy as np
-import os
+from utills import FileHandler
 import cv2
 import datetime
-from pathlib import Path
 import shamit.cloud_segmentation.Cloudseg as cs
+
 
 # Create a named window with a larger size
 window_name = 'Cloud Detection Result'
@@ -11,16 +11,16 @@ cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
 cv2.resizeWindow(window_name, 1600, 800)  # Adjust the size as needed
 
 # Assuming you have already obtained paths using glob
-data_base_path = Path("C:\Users\o.abdulmalik\Documents\SUNSET\2017_03_images_raw\03\10")
-sample_dataset = data_base_path.rglob("*.jpg")
+le= ["jpg","jpeg"]
+FH = FileHandler(dataset_path=r"C:\Users\o.abdulmalik\Documents\SUNSET\2017_03_images_raw\03",foldername="10",legal_extensions=le)
+filenames_without_ext = FH.files_no_extensions()
+filenames = FH.path_file()
+print(filenames_without_ext[0], filenames[0])
 
-# Now, for each path in the samplepath, we strip the directory and extension
-filenames_without_ext = [item.stem for item in sample_dataset]
+for filename, filename_without_ext in zip(filenames, filenames_without_ext):
+    ts = datetime.datetime.strptime(filename_without_ext, "%Y%m%d%H%M%S")
 
-for impath, ts in zip(samplepath, filenames_without_ext):
-    ts = datetime.datetime.strptime(ts, "%Y%m%d%H%M%S")
-
-    image = cv2.imread(impath)
+    image = cv2.imread(filename)
     image_resized = cv2.resize(image, (64, 64))  # Resize the original image to 64x64
     
     # Run cloud_detection function

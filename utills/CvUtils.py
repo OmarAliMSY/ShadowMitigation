@@ -1,4 +1,5 @@
 import cv2
+import pathlib
 
 
 
@@ -12,5 +13,10 @@ def show_image(image,
     """
     if title is None:
         title = "Image"
-    cv2.imshow(title, image)
-    cv2.waitKey(1)
+    if type(image) is str or type(image) is pathlib.WindowsPath:
+        image = cv2.imread(image)
+        image = cv2.resize(image,(1280,640))
+
+        cv2.imshow(title, image)
+    cv2.waitKey(0)
+
