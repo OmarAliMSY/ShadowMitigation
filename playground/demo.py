@@ -10,4 +10,5 @@ path_holder = []
                for e in legal_extensions]
 
 for path in path_holder:
+    print(dir(path))
     pass

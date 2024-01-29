@@ -1,13 +1,13 @@
 
-from Processor import Processor
+from .Processor import Processor
 
-class DataPreprocessor(Processor):
+class DataPostprocessor(Processor):
     """
     Abstract class for data preprocessor.
     """
     
     def __init__(self):
-        super(DataPreprocessor, self).__init__()
+        super(DataPostprocessor, self).__init__()
     
     def process(self, data):
         """
