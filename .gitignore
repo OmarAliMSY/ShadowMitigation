@@ -3,6 +3,6 @@
 /test
 /train
 /runs
+/playground/random
 environment.yml
 .idea
-/pipeline
