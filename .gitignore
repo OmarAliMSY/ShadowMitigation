@@ -1,7 +1,8 @@
-/sample_data
-/cloud-type-classification2
-/test
-/train
-/runs
+/sample_data/
+/cloud-type-classification2/
+/runs/
+/playground/
 environment.yml
 .idea
+asd.py
+/SKIPPD
