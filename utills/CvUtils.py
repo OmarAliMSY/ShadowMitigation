@@ -18,5 +18,5 @@ def show_image(image,
         image = cv2.resize(image,(1280,640))
 
         cv2.imshow(title, image)
-    cv2.waitKey(0)
+    cv2.waitKey(2)
 
