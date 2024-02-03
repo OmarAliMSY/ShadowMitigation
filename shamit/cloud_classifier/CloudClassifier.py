@@ -3,7 +3,7 @@ from ultralytics import YOLO
 
 class CloudClassifier:
 
-    def __init__(self,image,model=YOLO(r'C:\Users\Omar\Documents\ShadowMitigation\shamit\cloud_classifier\best.pt')) -> None:
+    def __init__(self,image,model=YOLO(r"shamit\cloud_classifier\best.pt")) -> None:
         self.model = model
         self.image = image
         self.class_dict = {0:"cirriform clouds",1:"high cumuliform clouds",2:"stratocumulus clouds",
