@@ -1,13 +1,38 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, LSTM, TimeDistributed, Reshape
 from processors.DataPreprocessor import DataPreprocessor
+from FileHandler import FileHandler
+from PIL import Image
+import numpy as np
+
+import tensorflow as tf
+print(tf.__version__)
+print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 
 
+#le= ["jpg","jpeg"]
+#
+#fp = FileHandler(dataset_path=r"SKIPPD",foldername="CloudMask",legal_extensions=le,include_subdirectories=False)
+#fp = fp.path_file()
+#
+#
+#data_preprocessor = DataPreprocessor(fp)
+#X_train, X_val, Y_train, Y_val = data_preprocessor.get_data()
+#
+#
+#with open('test.npy', 'wb') as f:
+#    np.save(f,  X_train)
+#    np.save(f,  X_val)
+#    np.save(f,  Y_train)
+#    np.save(f,  Y_val)
 
 
-folder_path = r'C:\Users\o.abdulmalik\Documents\Shadow-Mitigation\SKIPPD\05'  # Update this path to your images directory
-data_preprocessor = DataPreprocessor(folder_path)
-X_train, X_val, Y_train, Y_val = data_preprocessor.get_data()
+with open('test.npy', 'rb') as f:
+    X_train = np.load(f)
+    Y_train = np.load(f)
+    X_val = np.load(f)
+    Y_val = np.load(f)
+
 
 print(f"Training Input Shape: {X_train.shape}")
 print(f"Training Output Shape: {Y_train.shape}")
@@ -33,6 +58,6 @@ model.compile(optimizer='adam', loss='mean_squared_error')  # Adjust according t
 model.summary()
 
 # Train the model
-model.fit(X_train, Y_train, epochs=10, batch_size=32)
+model.fit(X_train, Y_train, epochs=20, batch_size=1)
 
 # Replace `X_train` and `Y_train` with your training data and labels respectively
