@@ -7,3 +7,4 @@ environment.yml
 asd.py
 /SKIPPD
 test.npy
+processed_data.npz

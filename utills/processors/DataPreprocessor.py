@@ -1,52 +1,62 @@
-import os
+from keras.utils import Sequence
 import numpy as np
+import os
 from PIL import Image
 from sklearn.model_selection import train_test_split
-from progressbar import progressbar
 
-
-def load_image( infilename ) :
-    img = Image.open( infilename )
+def load_image(infilename):
+    infilename = str(infilename) 
+    img = Image.open(infilename)
     img.load()
-    data = np.asarray( img, dtype="float16" )
+    
+    data = np.asarray(img, dtype="float16")
+    data/=255
     return data
 
+class DataGenerator(Sequence):
+    """
+    Keras Sequence based generator to load and preprocess image sequences on-the-fly.
+    """
 
-class DataPreprocessor:
-    """
-    Class for preprocessing image data: loading, creating sequences, and splitting into training/validation sets.
-    """
-     
-    def __init__(self, folder_path, sequence_length=15):
-        self.folder_paths = folder_path if isinstance(folder_path, list) else [folder_path]
+    def __init__(self, image_paths, sequence_length=15, batch_size=32):
+        self.image_paths = image_paths
         self.sequence_length = sequence_length
-        self.input_sequences = None
-        self.output_sequences = None
-        self.X_train = None
-        self.X_val = None
-        self.Y_train = None
-        self.Y_val = None
-        self._create_sequences()
-        self._split_data()
-
-    def _create_sequences(self):
-        input_sequences = []
-        output_sequences = []
-
+        self.batch_size = batch_size
+        self.indexes = np.arange(len(self.image_paths) - self.sequence_length * 2 + 1)
         
-        images = self.folder_paths
-        for i in progressbar(range(len(images) - self.sequence_length * 2 + 1)):
-            input_seq = images[i:i+self.sequence_length]
-            output_seq = images[i+self.sequence_length:i+self.sequence_length*2]
-            input_sequences.append(np.stack([load_image(img) for img in input_seq]))
-            output_sequences.append(np.stack([load_image(img) for img in output_seq]))
-        
-        
-        self.input_sequences = np.array(input_sequences)
-        self.output_sequences = np.array(output_sequences)
 
-    def _split_data(self):
-        self.X_train, self.X_val, self.Y_train, self.Y_val = train_test_split(self.input_sequences, self.output_sequences, test_size=0.2, random_state=42)
+    def __len__(self):
+        'Denotes the number of batches per epoch'
+        return int(np.floor((len(self.image_paths) - self.sequence_length * 2 + 1) / self.batch_size))
 
-    def get_data(self):
-        return self.X_train, self.X_val, self.Y_train, self.Y_val
+    def __getitem__(self, index):
+        'Generate one batch of data'
+        # Generate indexes of the batch
+        indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+
+        # Find list of IDs
+        list_IDs_temp = [k for k in indexes]
+        X, y = self.__data_generation(list_IDs_temp)
+
+        return X, y
+
+    def on_epoch_end(self):
+        'Updates indexes after each epoch'
+        self.indexes = np.arange(len(self.image_paths) - self.sequence_length * 2 + 1)
+        
+    def __data_generation(self, list_IDs_temp):
+     X = []
+     y = []
+
+     for i in list_IDs_temp:
+         # Input sequence
+         input_seq = self.image_paths[i:i+self.sequence_length]
+         # Output sequence
+         output_seq = self.image_paths[i+self.sequence_length:i+self.sequence_length*2]
+
+         # Stack the input sequence and add a channel dimension
+         X.append(np.stack([load_image(img)[..., np.newaxis] for img in input_seq], axis=0))
+         # Stack the output sequence and add a channel dimension
+         y.append(np.stack([load_image(img)[..., np.newaxis] for img in output_seq], axis=0))
+
+     return np.array(X), np.array(y)
