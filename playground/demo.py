@@ -1,14 +1,10 @@
 from pathlib import Path
+import cv2 as cv
+
+im = cv.imread(r"C:\Users\o.abdulmalik\Documents\Shadow-Mitigation\SKIPPD\05\20171101060000.jpg")
+save_im = cv.cvtColor(im,cv.COLOR_BGR2GRAY)
 
 
-legal_extensions = ['jpg', 'jpeg']
-parent_directory_path = Path(__file__).parent
-dataset_path = Path(parent_directory_path, 'random')
-
-path_holder = []
-[path_holder.extend(list(dataset_path.rglob(f'*.{e}')))
-               for e in legal_extensions]
-
-for path in path_holder:
-    print(dir(path))
-    pass
+for row in save_im:
+    for col in row:
+        print(col)
