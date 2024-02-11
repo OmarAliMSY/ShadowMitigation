@@ -6,12 +6,21 @@ from keras import layers
 from PIL import Image
 
 le= ["jpg","jpeg"]
-def load_image(infilename):
-    img = Image.open(infilename)
+def load_image(infilename, dtype="uint8"):
+    # Load the image
+    img = Image.open(infilename).convert('L')  # Convert to grayscale
     img.load()
-    data = np.asarray(img, dtype="float32")
+    
+    # Convert the image to the desired data type
+    data = np.asarray(img, dtype=dtype)
+    
+    # Threshold the image: set pixels to 0 or 1 based on a threshold (e.g., 128)
+    threshold_value = 128
+    data = (data >= threshold_value).astype(dtype)  # Convert to binary (0 or 1)
+    
     # Assuming images are grayscale, add a channel dimension
     data = np.expand_dims(data, axis=-1)
+    
     return data
 
 
@@ -36,8 +45,8 @@ train_dataset = dataset[train_index]
 val_dataset = dataset[val_index]
 
 # Normalize the data to the 0-1 range.
-train_dataset = train_dataset / 255
-val_dataset = val_dataset / 255
+train_dataset = train_dataset
+val_dataset = val_dataset 
 
 
 # We'll define a helper function to shift the frames, where
@@ -51,7 +60,7 @@ def create_shifted_frames(data, window_size=15,threshold = 500):
         sequence_y = data[i+1:i+window_size+1]
 
         sequence_sum = np.sum(sequence_x)
-        if sequence_sum > threshold:
+        if sequence_sum > threshold and sequence_sum <= 50000:
             x.append(sequence_x)
             y.append(sequence_y)
 
@@ -68,24 +77,22 @@ print(f"Training Dataset Shapes:  {x_train.shape} {y_train.shape}")
 print(f"Validation Dataset Shapes: {x_val.shape} {y_val.shape}")
 
 
-## Construct a figure on which we will visualize the images.
-#fig, axes = plt.subplots(3, 5, figsize=(10, 8))
-#
-## Plot each of the sequential images for one random data example.
-#data_choice = np.random.choice(range(len(x_train)), size=1)[0]
-#for idx, ax in enumerate(axes.flat):
-#    ax.imshow(np.squeeze(x_train[data_choice][idx]), cmap="gray")
-#    ax.set_title(f"Frame {idx + 1}")
-#    ax.axis("off")
-#
-## Print information and display the figure.
-#print(f"Displaying frames for example {data_choice}.")
-#plt.show()
+# Construct a figure on which we will visualize the images.
+fig, axes = plt.subplots(3, 5, figsize=(10, 8))
 
+# Plot each of the sequential images for one random data example.
+data_choice = np.random.choice(range(len(x_train)), size=1)[0]
+for idx, ax in enumerate(axes.flat):
+    ax.imshow(np.squeeze(x_train[data_choice][idx]), cmap="gray")
+    ax.set_title(f"Frame {idx + 1}")
+    ax.axis("off")
 
-## Construct the input layer with no definite frame size.
-#inp = layers.Input(shape=(None, *x_train.shape[2:]))
-#
+# Print information and display the figure.
+print(f"Displaying frames for example {data_choice}.")
+plt.show()
+# Construct the input layer with no definite frame size.
+inp = layers.Input(shape=(None, *x_train.shape[2:]))
+print((None, *x_train.shape[2:]))
 ## We will construct 3 `ConvLSTM2D` layers with batch normalization,
 ## followed by a `Conv3D` layer for the spatiotemporal outputs.
 #x = layers.ConvLSTM2D(
@@ -118,7 +125,7 @@ print(f"Validation Dataset Shapes: {x_val.shape} {y_val.shape}")
 ## Next, we will build the complete model and compile it.
 #model = keras.models.Model(inp, x)
 #model.compile(
-#    loss=keras.losses.MeanSquaredError(),
+#    loss=keras.losses.BinaryCrossentropy(),
 #    optimizer=keras.optimizers.Adam(),
 #)
 #
@@ -128,11 +135,11 @@ print(f"Validation Dataset Shapes: {x_val.shape} {y_val.shape}")
 #reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor="val_loss", patience=5)
 #
 ## Define modifiable training hyperparameters.
-#epochs = 25
+#epochs = 15
 #batch_size = 5
 #
 ## Fit the model to the training data.
-#model.fit(
+#seq_model = model.fit(
 #    x_train,
 #    y_train,
 #    batch_size=batch_size,
@@ -140,11 +147,23 @@ print(f"Validation Dataset Shapes: {x_val.shape} {y_val.shape}")
 #    validation_data=(x_val, y_val),
 #    callbacks=[early_stopping, reduce_lr],
 #)
-
-model = keras.models.load_model('CM_Model1.keras')
-#model = keras.models.load_model('location.keras')
-
-
+#model.save('NewCM_.keras')
+#
+#try:# visualizing losses and accuracy
+#    train_loss = seq_model.history['loss']
+#    val_loss   = seq_model.history['val_loss']
+#    xc         = range(epochs)
+#
+#    plt.figure()
+#    plt.plot(xc, train_loss)
+#    plt.plot(xc, val_loss)
+#except Exception as e:
+#    print(e)
+#
+##model = keras.models.load_model('CM_Model1.keras')
+##model = keras.models.load_model('location.keras')
+#
+#
 for i in range(30):
     # Assuming `val_dataset` is correctly shaped as (N, 30, 64, 64, 1) where N is the number of samples
     example = val_dataset
