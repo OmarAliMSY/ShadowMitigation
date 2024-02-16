@@ -26,7 +26,7 @@ class CloudMaskModel:
         fp = FileHandler(dataset_path=self.dataset_path, foldername=self.foldername, legal_extensions=self.legal_extensions, include_subdirectories=False)
         folder_paths = fp.path_file()
         dataset = np.array([self.load_image(img) for img in folder_paths])
-        dataset = dataset[:15000]
+        dataset = dataset[:20000]
         return dataset
 
     def prepare_dataset(self, dataset):
@@ -48,7 +48,7 @@ class CloudMaskModel:
         val_dataset = dataset[val_index]
         return train_dataset,val_dataset
 
-    def create_shifted_frames(self, data, window_size=15, threshold=500):
+    def create_shifted_frames(self, data, window_size=15, threshold=1500):
         x, y = [], []
         for i in range(len(data) - window_size):
             # Original sequences of 15 frames
@@ -57,10 +57,11 @@ class CloudMaskModel:
 
             # Check if the sequence meets the threshold criteria
             sequence_sum = np.sum(sequence_x)
-            if threshold < sequence_sum <= 40000:
+            if threshold < sequence_sum <= 25000:
+                print(sequence_sum)
                 # Reduce each sequence from 15 to 5 frames by calculating the mean of every 3 frames
-                reduced_sequence_x = self.reduce_sequence(sequence_x)
-                reduced_sequence_y = self.reduce_sequence(sequence_y)
+                reduced_sequence_x = sequence_x
+                reduced_sequence_y = sequence_y
 
                 x.append(reduced_sequence_x)
                 y.append(reduced_sequence_y)
@@ -88,7 +89,7 @@ class CloudMaskModel:
         self.model = models.Model(inp, x)
         self.model.compile(loss='binary_crossentropy', optimizer='adam')
 
-    def train_model(self, x_train, y_train, x_val, y_val, epochs=10, batch_size=15):
+    def train_model(self, x_train, y_train, x_val, y_val, epochs=10, batch_size=5):
         early_stopping = keras.callbacks.EarlyStopping(monitor="val_loss", patience=10)
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor="val_loss", patience=5)
         self.model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
@@ -101,8 +102,8 @@ class CloudMaskModel:
 
     def predict_and_visualize(self, val_dataset, num_predictions=30):
         for i in range(num_predictions):
-            example = val_dataset[400:]
-            seq = 5  # Sequence length for predictions
+            example = val_dataset[100:]
+            seq = 15  # Sequence length for predictions
 
             # Assuming `example` is shaped correctly as mentioned in your error message, we directly use it
             # Initial frames for generating predictions, ensuring the shape aligns with model expectations
@@ -121,16 +122,16 @@ class CloudMaskModel:
 
             
             # Visualization adjustments
-            fig, axes = plt.subplots(2, 5, figsize=(20, 4))
+            fig, axes = plt.subplots(2, 15, figsize=(20, 4))
 
             # Plot the original frames (frames 16 to 30 of the sequence).
             for idx, ax in enumerate(axes[0]):
-                ax.imshow(np.squeeze(original_frames[idx+2]), cmap="gray")
+                ax.imshow(np.squeeze(original_frames[idx]), cmap="gray")
                 ax.set_title(f"Original {idx + 16}")
                 ax.axis("off")
 
             # Plot the new frames (the predicted continuation).
-            new_frames = frames[-5:, ...]  # Select the last 15 frames as the new predicted frames
+            new_frames = frames[-15:, ...]  # Select the last 15 frames as the new predicted frames
             for idx, ax in enumerate(axes[1]):
                 ax.imshow(np.squeeze(new_frames[idx]), cmap="gray")
                 ax.set_title(f"Predicted {idx + 16}")
@@ -145,8 +146,10 @@ cm_model = CloudMaskModel(dataset_path=r"SKIPPD")
 dataset = cm_model.load_dataset()
 x_train, y_train, x_val, y_val = cm_model.prepare_dataset(dataset)
 cm_model.define_model(input_shape=(None, 64, 64, 1))  # Assuming all images are 64x64 pixels
-#cm_model.train_model(x_train, y_train, x_val, y_val)
-cm_model.load_model(model_path="241102_CM.keras")
+print(y_val.shape)
+cm_model.train_model(x_train, y_train, x_val, y_val)
+#cm_model.load_model(model_path="240216_2.keras")
+cm_model.save_model(model_path="240216_3.keras")
 #cm_model.load_model('NewCM_.keras')
 _,val_dataset = cm_model.get_datasets(dataset=dataset)
 cm_model.predict_and_visualize(num_predictions=30,val_dataset=val_dataset)

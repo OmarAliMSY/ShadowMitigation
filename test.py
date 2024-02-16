@@ -3,8 +3,8 @@ from utills import FileHandler
 import cv2
 import datetime
 import shamit.cloud_segmentation.Cloudseg as cs
-
 import pandas as pd
+
 df = pd.read_csv(r"SKIPPD\2017_pv_raw.csv",parse_dates=["Date"])
 res = df.loc[df["Huang_E4102_kW"] >= 0]
 datel =  list(res["Date"])
