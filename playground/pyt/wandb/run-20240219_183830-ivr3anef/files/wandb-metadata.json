@@ -1,0 +1,52 @@
+{
+    "os": "Windows-10-10.0.22631-SP0",
+    "python": "3.9.18",
+    "heartbeatAt": "2024-02-19T17:38:32.231460",
+    "startedAt": "2024-02-19T17:38:30.997501",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/OmarAliMSY/Shadow-Mitigation.git",
+        "commit": "44a4ff90341e24816e72f3b56ee2e46cbe55dbf1"
+    },
+    "email": "o.abdulmalik@mounting-systems.com",
+    "root": "C:/Users/Omar/Documents/ShadowMitigation",
+    "host": "Omars-Pc",
+    "username": "Omar",
+    "executable": "c:\\Users\\Omar\\miniconda3\\envs\\shamit\\python.exe",
+    "cpu_count": 8,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 2496.0,
+        "min": 0.0,
+        "max": 2496.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2496.0,
+            "min": 0.0,
+            "max": 2496.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 945.1463890075684,
+            "used": 554.2671127319336
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3070",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3070",
+            "memory_total": 8589934592
+        }
+    ],
+    "memory": {
+        "total": 15.856666564941406
+    }
+}

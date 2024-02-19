@@ -149,7 +149,7 @@ cm_model.define_model(input_shape=(None, 64, 64, 1))  # Assuming all images are 
 print(y_val.shape)
 cm_model.train_model(x_train, y_train, x_val, y_val)
 #cm_model.load_model(model_path="240216_2.keras")
-cm_model.save_model(model_path="240216_3.keras")
+cm_model.save_model(model_path="240217_3.keras")
 #cm_model.load_model('NewCM_.keras')
 _,val_dataset = cm_model.get_datasets(dataset=dataset)
 cm_model.predict_and_visualize(num_predictions=30,val_dataset=val_dataset)
