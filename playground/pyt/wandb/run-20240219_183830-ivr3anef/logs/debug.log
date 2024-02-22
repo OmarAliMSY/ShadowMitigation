@@ -33,3 +33,5 @@ config: {'learning_rate': 0.001, 'architecture': 'CONVLSTM', 'dataset': 'SKIPPD'
 2024-02-19 18:38:42,442 INFO    MainThread:16820 [jupyter.py:save_ipynb():373] not saving jupyter notebook
 2024-02-19 18:38:42,442 INFO    MainThread:16820 [wandb_init.py:_pause_backend():437] pausing backend
 2024-02-19 18:39:09,928 INFO    MainThread:16820 [wandb_init.py:_resume_backend():442] resuming backend
+2024-02-19 20:15:56,042 INFO    MainThread:16820 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-02-19 20:15:56,042 INFO    MainThread:16820 [wandb_init.py:_pause_backend():437] pausing backend
