@@ -2,6 +2,7 @@ import cv2
 from hikvisionapi import Client
 import datetime
 import os
+from playground.helper  import *
 
 class HikvisionCamera:
     def __init__(self, rtsp_url, camera_ip, username, password):
@@ -57,7 +58,7 @@ class HikvisionCamera:
 if __name__ == '__main__':
     camera_ip = '10.49.61.106'
     username = 'admin'
-    password = 'sIgmaview124'  # Be cautious with real passwords
+    password = rtsp_password 
     rtsp_url = f'rtsp://{username}:sIgmaview124@{camera_ip}/Streaming/Channels/1'
     
     camera = HikvisionCamera(rtsp_url, camera_ip, username, password)
