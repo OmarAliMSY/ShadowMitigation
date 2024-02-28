@@ -43,7 +43,7 @@ class HikvisionCamera:
         original_datetime = datetime.datetime.fromisoformat(date)
         formatted_datetime_str = original_datetime.strftime("%Y%m%d%H%M")
         name = f'{formatted_datetime_str}.jpg'
-        path = 'images'
+        path = 'playground/images'
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -60,5 +60,5 @@ if __name__ == '__main__':
     rtsp_url = f'rtsp://{username}:sIgmaview124@{camera_ip}/Streaming/Channels/1'
     
     camera = HikvisionCamera(rtsp_url, camera_ip, username, password)
-    camera.save_images_only()
+    camera.display_stream()
 

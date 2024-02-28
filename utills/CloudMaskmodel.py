@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from keras import layers, models
 from PIL import Image
 import keras
+
+
+
 class CloudMaskModel:
     def __init__(self, dataset_path, foldername="CloudMask", legal_extensions=["jpg", "jpeg"], model_path=None):
         self.dataset_path = dataset_path
