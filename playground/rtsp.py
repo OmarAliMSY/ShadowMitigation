@@ -24,6 +24,7 @@ class HikvisionCamera:
 
         self.cap.release()
         cv2.destroyAllWindows()
+        
     def save_images_only(self, interval_seconds=60):
         while True:
             current_time = datetime.datetime.now()
