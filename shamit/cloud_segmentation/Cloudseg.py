@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 class CloudSeg:
-    def __init__(self, time,latitude=37.424107, longitude=-122.174199, delta=14.036, r=29, origin_x=29, origin_y=30):
+    def __init__(self, time,latitude=37.424107, longitude=-122.174199, delta=14.036, r=29, origin_x=29, origin_y=30, zone_center_long = -120):
         self.latitude = latitude
         self.longitude = longitude
         self.delta = delta                                              # the difference between geological north and sky image north
@@ -14,7 +14,7 @@ class CloudSeg:
         self.origin_x = origin_x                                        # Cartesian coordinates of the sky image center x=29
         self.origin_y = origin_y                                        # Cartesian coordinates of the sky image center y=30
         self.target_timezone = pytz.timezone('America/Los_Angeles')
-        self.time_zone_center_longitude = -120
+        self.time_zone_center_longitude = zone_center_long
         self.time = time
         
         self.time_corr()
@@ -73,8 +73,8 @@ class CloudSeg:
         match_csl_image = csl_image[np.argmin(dist_sun_center)]
 
         ### Modified threshold method to detect cloud
-        NRBR_orig = np.divide((image[:,:,0].astype(int)-image[:,:,2].astype(int)),(image[:,:,0].astype(int)+image[:,:,2].astype(int)))
-        NRBR_cs = np.divide((match_csl_image[:,:,0].astype(int)-match_csl_image[:,:,2].astype(int)),(match_csl_image[:,:,0].astype(int)+match_csl_image[:,:,2].astype(int)))
+        NRBR_orig = np.divide((image[:,:,0].astype(int)-image[:,:,2].astype(int)), (image[:,:,0].astype(int)+image[:,:,2].astype(int))+ 1e-10)
+        NRBR_cs = np.divide((match_csl_image[:,:,0].astype(int)-match_csl_image[:,:,2].astype(int)),(match_csl_image[:,:,0].astype(int)+match_csl_image[:,:,2].astype(int))+ 1e-10)
         d_NRBR = np.abs(NRBR_orig-NRBR_cs)
         cloud = np.zeros((64,64),dtype=int)
 
